@@ -17,6 +17,9 @@ class DetailViewController: UIViewController, UITextFieldDelegate {
                                                     message: nil,
                                                     preferredStyle: .actionSheet)
         
+        alertController.modalPresentationStyle = .popover
+        alertController.popoverPresentationController?.barButtonItem = sender
+        
         let cameraAction = UIAlertAction(title: "Camera", style: .default) { _ in
                 print("Present camera")
             }
