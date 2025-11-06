@@ -7,7 +7,7 @@
 
 import UIKit
 
-class DetailViewController: UIViewController, UITextFieldDelegate {
+class DetailViewController: UIViewController, UITextFieldDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate {
     
     @IBOutlet var nameField: UITextField!
     @IBOutlet var serialNumberField: UITextField!
@@ -76,21 +76,38 @@ class DetailViewController: UIViewController, UITextFieldDelegate {
         alertController.modalPresentationStyle = .popover
         alertController.popoverPresentationController?.barButtonItem = sender
         
-        let cameraAction = UIAlertAction(title: "Camera", style: .default) { _ in
-                print("Present camera")
+        if UIImagePickerController.isSourceTypeAvailable(.camera) {
+            let cameraAction = UIAlertAction(title: "Camera", style: .default) { _ in
+                //print("Present camera")
+                let imagePicker = self.imagePicker(for: .camera)
+                self.present(imagePicker, animated: true, completion: nil)
             }
             alertController.addAction(cameraAction)
-
-            let photoLibraryAction
-                    = UIAlertAction(title: "Photo Library", style: .default) { _ in
-                print("Present photo library")
-            }
-            alertController.addAction(photoLibraryAction)
-
-            let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
-            alertController.addAction(cancelAction)
+        }
         
-            present(alertController, animated: true, completion: nil)
+        let photoLibraryAction
+        = UIAlertAction(title: "Photo Library", style: .default) { _ in
+            //print("Present photo library")
+            let imagePicker = self.imagePicker(for: .photoLibrary)
+            imagePicker.modalPresentationStyle = .popover
+            imagePicker.popoverPresentationController?.barButtonItem = sender
+            self.present(imagePicker, animated: true, completion: nil)
+        }
+        alertController.addAction(photoLibraryAction)
+        
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
+        alertController.addAction(cancelAction)
+        
+        present(alertController, animated: true, completion: nil)
+        
+    }
+    
+    func imagePicker(for sourceType: UIImagePickerController.SourceType)
+    -> UIImagePickerController {
+        let imagePicker = UIImagePickerController()
+        imagePicker.sourceType = sourceType
+        imagePicker.delegate = self
+        return imagePicker
     }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
