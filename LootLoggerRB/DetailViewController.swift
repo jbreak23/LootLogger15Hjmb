@@ -8,39 +8,12 @@
 import UIKit
 
 class DetailViewController: UIViewController, UITextFieldDelegate {
-    @IBAction func backgroundTapped(_ sender: UITapGestureRecognizer) {
-        view.endEditing(true)
-    }
-    
-    @IBAction func choosePhotoSource(_ sender: UIBarButtonItem) {
-        let alertController = UIAlertController(title: nil,
-                                                    message: nil,
-                                                    preferredStyle: .actionSheet)
-        
-        alertController.modalPresentationStyle = .popover
-        alertController.popoverPresentationController?.barButtonItem = sender
-        
-        let cameraAction = UIAlertAction(title: "Camera", style: .default) { _ in
-                print("Present camera")
-            }
-            alertController.addAction(cameraAction)
-
-            let photoLibraryAction
-                    = UIAlertAction(title: "Photo Library", style: .default) { _ in
-                print("Present photo library")
-            }
-            alertController.addAction(photoLibraryAction)
-
-            let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
-            alertController.addAction(cancelAction)
-        
-            present(alertController, animated: true, completion: nil)
-    }
     
     @IBOutlet var nameField: UITextField!
     @IBOutlet var serialNumberField: UITextField!
     @IBOutlet var valueField: UITextField!
     @IBOutlet var dateLabel: UILabel!
+    @IBOutlet var imageView: UIImageView!
     
     var item: Item!{
         didSet {
@@ -91,8 +64,38 @@ class DetailViewController: UIViewController, UITextFieldDelegate {
         }
     }
     
+    @IBAction func backgroundTapped(_ sender: UITapGestureRecognizer) {
+        view.endEditing(true)
+    }
+    
+    @IBAction func choosePhotoSource(_ sender: UIBarButtonItem) {
+        let alertController = UIAlertController(title: nil,
+                                                    message: nil,
+                                                    preferredStyle: .actionSheet)
+        
+        alertController.modalPresentationStyle = .popover
+        alertController.popoverPresentationController?.barButtonItem = sender
+        
+        let cameraAction = UIAlertAction(title: "Camera", style: .default) { _ in
+                print("Present camera")
+            }
+            alertController.addAction(cameraAction)
+
+            let photoLibraryAction
+                    = UIAlertAction(title: "Photo Library", style: .default) { _ in
+                print("Present photo library")
+            }
+            alertController.addAction(photoLibraryAction)
+
+            let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
+            alertController.addAction(cancelAction)
+        
+            present(alertController, animated: true, completion: nil)
+    }
+    
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
         return true
     }
+    
 }
