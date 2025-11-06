@@ -30,36 +30,43 @@ class DetailViewController: UIViewController, UITextFieldDelegate, UINavigationC
         formatter.maximumFractionDigits = 2
         return formatter
     }()
-
+    
     let dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateStyle = .medium
         formatter.timeStyle = .none
         return formatter
     }()
-
-        override func viewWillAppear(_ animated: Bool) {
-            super.viewWillAppear(animated)
-
-            nameField.text = item.name
-            serialNumberField.text = item.serialNumber
-            valueField.text =
-                    numberFormatter.string(from: NSNumber(value: item.valueInDollars))
-                dateLabel.text = dateFormatter.string(from: item.dateCreated)
-        }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        nameField.text = item.name
+        serialNumberField.text = item.serialNumber
+        valueField.text =
+        numberFormatter.string(from: NSNumber(value: item.valueInDollars))
+        dateLabel.text = dateFormatter.string(from: item.dateCreated)
+        
+        // Get the item key
+        let key = item.itemKey
+        
+        // If there is an associated image with the item, display it on the image view
+        let imageToDisplay = imageStore.image(forKey: key)
+        imageView.image = imageToDisplay
+    }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         
         // Clear first responder
-           view.endEditing(true)
-
+        view.endEditing(true)
+        
         // "Save" changes to item
         item.name = nameField.text ?? ""
         item.serialNumber = serialNumberField.text
-
+        
         if let valueText = valueField.text,
-            let value = numberFormatter.number(from: valueText) {
+           let value = numberFormatter.number(from: valueText) {
             item.valueInDollars = value.intValue
         } else {
             item.valueInDollars = 0
@@ -72,8 +79,8 @@ class DetailViewController: UIViewController, UITextFieldDelegate, UINavigationC
     
     @IBAction func choosePhotoSource(_ sender: UIBarButtonItem) {
         let alertController = UIAlertController(title: nil,
-                                                    message: nil,
-                                                    preferredStyle: .actionSheet)
+                                                message: nil,
+                                                preferredStyle: .actionSheet)
         
         alertController.modalPresentationStyle = .popover
         alertController.popoverPresentationController?.barButtonItem = sender
@@ -113,17 +120,17 @@ class DetailViewController: UIViewController, UITextFieldDelegate, UINavigationC
     }
     
     func imagePickerController(_ picker: UIImagePickerController,
-            didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]) {
-
+                               didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]) {
+        
         // Get picked image from info dictionary
         let image = info[.originalImage] as! UIImage
         
         // Store the image in the ImageStore for the item's key
         imageStore.setImage(image, forKey: item.itemKey)
-
+        
         // Put that image on the screen in the image view
         imageView.image = image
-
+        
         // Take image picker off the screen - you must call this dismiss method
         dismiss(animated: true, completion: nil)
     }
